@@ -52,8 +52,8 @@ Available targets are:
 
 Note: If playing with the SQL client, and using the PageViews table, switch to stream mode.
 [Docs](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/sqlclient/)
-![SQL Client](images/sql.png "SQL Client")
-![SQL Results](images/results.png "SQL Results")
+![SQL Client](images/sql.png "SQL Client") { width: 200px; }
+![SQL Results](images/results.png "SQL Results") { width: 300px; }
 
 When run the docker compose will start:
  * Zookeeper
