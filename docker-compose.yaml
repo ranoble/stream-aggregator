@@ -1,0 +1,93 @@
+version: '3'
+services:
+  jobmanager:
+    image: library/flink-test:latest
+    hostname: "jobmanager"
+    expose:
+      - "6123"
+    ports:
+      - "8082:8081"
+      - "8789:8789"
+      - "9249:9249"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    depends_on:
+      - kafka
+    volumes:
+      - ./docker/flink/catalog.sql:/opt/flink/catalog.sql
+      - ./data:/tmp/data
+  taskmanager:
+    image: library/flink-test:latest
+    expose:
+      - "6121"
+      - "6122"
+      - "9249"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    volumes:
+      - ./data:/tmp/data
+    links:
+      - jobmanager:jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
+  taskrunner:
+    image: library/flink-test:latest
+    depends_on:
+      - jobmanager
+      - taskmanager
+    command: sh /opt/tasks/runtasks.sh
+    restart: "no"
+    links:
+      - jobmanager:jobmanager
+      - kafka:kafka
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    volumes:
+      - ./docker/taskrunner:/opt/tasks
+        # Mount jar file
+  # Run tasks
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+  kafka:
+    image: library/kafka-with-metrics:latest
+    ports:
+      - "9092:9092"
+      - "7071:7071"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: "kafka"
+      KAFKA_ADVERTISED_PORT: "9092"
+      HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "page_views:1:1"
+      KAFKA_OPTS: -javaagent:/opt/kafka/prometheus/jmx_prometheus_javaagent.jar=7071:/opt/kafka/prometheus/kafka_metrics.yml
+
+  prometheus:
+    image: "prom/prometheus"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml"
+    links:
+      - taskmanager:taskmanager
+    depends_on:
+      - kafka
+      - jobmanager
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - ./docker/grafana-config/provisioning/:/etc/grafana/provisioning/
+      - ./docker/grafana-config/dashboards/:/etc/grafana/dashboards/
+      - ./docker/grafana-config/grafana.ini:/etc/grafana/grafana.ini
