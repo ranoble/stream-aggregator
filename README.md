@@ -1,6 +1,8 @@
 ## Take Home Test
 
+
 ![Flink Aggregation Job Topologoy](images/Aggregation.png "Aggregator")
+
 
 ### Solution technology:
 
@@ -52,8 +54,8 @@ Available targets are:
 
 Note: If playing with the SQL client, and using the PageViews table, switch to stream mode.
 [Docs](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/sqlclient/)
-![SQL Client](images/sql.png "SQL Client") { width: 200px; }
-![SQL Results](images/results.png "SQL Results") { width: 300px; }
+![SQL Client](images/sql.png "SQL Client"  =250x)
+![SQL Results](images/results.png "SQL Results" =350x)
 
 When run the docker compose will start:
  * Zookeeper
