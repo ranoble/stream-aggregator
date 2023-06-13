@@ -54,7 +54,7 @@ Available targets are:
 
 Note: If playing with the SQL client, and using the PageViews table, switch to stream mode.
 [Docs](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/sqlclient/)
-![SQL Client](images/sql.png "SQL Client"  =250x)
+[<img src="images/sql.png" width="250"/>](images/sql.png "SQL Client")
 ![SQL Results](images/results.png "SQL Results" =350x)
 
 When run the docker compose will start:
