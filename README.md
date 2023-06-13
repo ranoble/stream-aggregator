@@ -1,5 +1,3 @@
-# Checkout.com
-
 ## Take Home Test
 
 ![Flink Aggregation Job Topologoy](images/Aggregation.png "Aggregator")
