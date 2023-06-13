@@ -58,7 +58,7 @@ Note: If playing with the SQL client, and using the PageViews table, switch to s
 
 [<img src="images/sql.png" width="350"/>](images/sql.png "SQL Client")
 
-[<img src="images/results.png" width="450"/>](images/results.png "SQL Results" =350x)
+[<img src="images/results.png" width="450"/>](images/results.png "SQL Results")
 
 When run the docker compose will start:
  * Zookeeper
