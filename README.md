@@ -53,9 +53,12 @@ Available targets are:
  * make sql - opens up the flink SQL client to experiment with.
 
 Note: If playing with the SQL client, and using the PageViews table, switch to stream mode.
+
 [Docs](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/sqlclient/)
-[<img src="images/sql.png" width="250"/>](images/sql.png "SQL Client")
-![SQL Results](images/results.png "SQL Results" =350x)
+
+[<img src="images/sql.png" width="350"/>](images/sql.png "SQL Client")
+
+[<img src="images/results.png" width="450"/>](images/results.png "SQL Results" =350x)
 
 When run the docker compose will start:
  * Zookeeper
