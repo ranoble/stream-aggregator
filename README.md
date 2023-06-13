@@ -18,22 +18,23 @@ In this file, I've also demonstrated a simple UDF to transform a random number i
 
 For the actual test component, the [Aggregation Pipeline](src/main/java/com/checkout/aggregation/AggregationPipeline.java)
 , I've built it as a split pipeline using the same consumer group for writing both the View Event sink, as well as the 
-Aggregation Sink. This way, if an error occurs, they'll only continue together ands avoid drift. It also demonstrates a 
+Aggregation Sink. This way, if an error occurs, they'll only continue together and avoids drift. It also demonstrates a 
 slightly more complex pipeline.
 
 I've used the in-memory catalog, once again, as it's simple and can be included. This is represented in the [Catalog](src/main/java/com/checkout/tables/Catalog.java) 
-java file, and again in the [sql catalog](docker/flink/catalog.sql).
+java file, and again in the [sql catalog](docker/flink/catalog.sql). In production, we could use Glue, as the iceberg connector provides that capacity out of ther box. 
+
 For both sinks, I've partitioned by date and hour, though this can easily be changed as seen in the code (I hope).
 The files should go into the ./data directory on run (check the docker-compose volume)
 
-I chose to use default josnl format, as it's easier to read, and local as we dont need to configure S3 access.
+I chose to use default jsonl format, as it's easier to read, and local as we dont need to configure S3 access.
 Though I'd use parquet or orc format in production (orc handles deep nesting better, in flink). We'd need to 
-configure the hadoop libraries and connectors, but that would be simple enough, though it makes the images pretty large. 
+configure the hadoop libraries and connectors, but that would be simple enough, though it does make the images pretty large. 
 
 Tests are in the usual place. 
 
 As an aside, this could have all been a couple of SQL files as well, but there would be less testability.
-Filesystem times are ridiculously low, but that is more so that it's simpler to see it running. 
+Filesystem rollover times are ridiculously low, but that is more so that it's simpler to see it running. 
 Also, the rate of messages is at 1000ps. 
 
 ### Building the pipeline
