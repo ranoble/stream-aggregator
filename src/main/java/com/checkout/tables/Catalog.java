@@ -2,6 +2,10 @@ package com.checkout.tables;
 
 public class Catalog {
 
+    /**
+     * The Kafka topic table definition.
+     * Watermark is set to accept out of order records  for 5 seconds
+     */
     public static String PAGE_VIEWS_STREAM = "CREATE TABLE PageViews (\n" +
             "    user_id INT NOT NULL,\n" +
             "    postcode STRING NOT NULL,\n" +
@@ -17,6 +21,10 @@ public class Catalog {
             "    'format'    = 'json'\n" +
             ")";
 
+    /**
+     * The S3 "raw" data output. Partitioned by data and hour.
+     * Very small commit interval for testing purposes.
+     */
     public static String PAGE_VIEWS_FILESYSTEM = "CREATE TABLE PageViewsFS (\n" +
             "    user_id INT NOT NULL,\n" +
             "    postcode STRING NOT NULL,\n" +
@@ -36,7 +44,10 @@ public class Catalog {
             "    'format' = 'json'\n" +
             ")";
 
-
+    /**
+     * The S3 "aggregate" data output. Partitioned by data and hour.
+     * Very small commit interval for testing purposes.
+     */
     public static String PAGE_VIEW_AGGREGATE = "CREATE TABLE PageViewsAggregate (\n" +
             "    postcode STRING NOT NULL,\n" +
             "    `window` TIMESTAMP(3) NOT NULL,\n" +
@@ -55,6 +66,10 @@ public class Catalog {
             "    'format'    = 'json'\n" +
             ")";
 
+    /**
+     * The Data Generation Table. Configured to emit data according to the provided settings.
+     * Feeds into a UDF then into the Kafka Topic.
+     */
     public static String PAGE_VIEWS_GENERATION = "CREATE TABLE PageViewDataGen (\n" +
             "    user_id INT NOT NULL,\n" +
             "    postcode_index INT NOT NULL,\n" +

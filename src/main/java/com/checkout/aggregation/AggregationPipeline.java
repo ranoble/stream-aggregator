@@ -33,6 +33,10 @@ public class AggregationPipeline {
                 .execute();
     }
 
+    /**
+     * Set up the Flink environment.
+     * @return
+     */
     private AggregationPipeline buildEnvironment() {
         EnvironmentSettings settings = EnvironmentSettings
                 .newInstance()
@@ -42,6 +46,11 @@ public class AggregationPipeline {
         return this;
     }
 
+    /**
+     * The pipelines to run, in this case, aggregation and passthrough.
+     * Add any new steps to the pipeline here.
+     * @return the executable statement set.
+     */
     private AggregationPipeline defineProcessors() {
         StatementSet statements = env.createStatementSet();
         statements.addInsert("PageViewsFS", passThrough(env.from("PageViews")));
@@ -54,6 +63,10 @@ public class AggregationPipeline {
         return statements.execute();
     }
 
+    /**
+     * Register the input sources.
+     * @return
+     */
     private AggregationPipeline registerSources() {
         env.executeSql(StringSubstitutor.replace(
                 PAGE_VIEWS_STREAM, Map.of("CONSUMER_GROUP", consumerGroup, "KAFKA_BOOTSTRAP", bootstrap),
@@ -61,12 +74,21 @@ public class AggregationPipeline {
         return this;
     }
 
+    /**
+     * Register the output Sinks
+     * @return
+     */
     private AggregationPipeline registerSinks() {
         env.executeSql(PAGE_VIEWS_FILESYSTEM);
         env.executeSql(PAGE_VIEW_AGGREGATE);
         return this;
     }
 
+    /**
+     * Enhance the input source by adding dat and hour, useful for partitioninng in a filesystem.
+     * @param source
+     * @return output Table.
+     */
     public Table passThrough(Table source) {
         return source.select($("user_id"),
                 $("postcode"),
@@ -76,6 +98,11 @@ public class AggregationPipeline {
                 dateFormat($("timestamp"), "HH").as("hour"));
     }
 
+    /**
+     * Aggregate the data from the source input into windows by minute and by postcode.
+     * @param source
+     * @return the output, ready for materialisation
+     */
     public Table aggregateViews(Table source) {
         return source
                 .window(Tumble.over(lit(1).minute()).on($("timestamp")).as("window"))

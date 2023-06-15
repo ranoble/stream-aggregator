@@ -28,6 +28,11 @@ public class DataGen {
             "www.website.com/catalog.html", "www.website.com/blah.html"
     );
 
+    /**
+     * Data Generation function: Uses the built in Data Gen facility, and a UDF to generate realistic looking data.
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         EnvironmentSettings settings = EnvironmentSettings
                 .newInstance()
@@ -57,6 +62,9 @@ public class DataGen {
         generated.insertInto("PageViews").execute();
     }
 
+    /**
+     * UDF, maps an input integer to an output option string.
+     */
     public static class GenerateOption extends ScalarFunction {
         public String eval(int index, List<String> options) {
             return options.get(abs(index) % options.size());
